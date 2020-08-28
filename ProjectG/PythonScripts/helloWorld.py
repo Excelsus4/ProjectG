@@ -1,5 +1,9 @@
 class Test():
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, fls):
+        self.fls = fls
+
     def display(self):
-        return "Hi, " + self.name
+        ret = 0.
+        for f in self.fls:
+            ret= ret + f;
+        return ret

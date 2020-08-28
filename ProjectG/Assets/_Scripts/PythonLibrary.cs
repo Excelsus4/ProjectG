@@ -1,8 +1,26 @@
 ﻿using UnityEngine;
 using IronPython.Hosting;
+using System.Collections.Generic;
 
 namespace Exodrifter.UnityPython.Examples
 {
+	public class MObject {
+		public MObject(int type, Vector3 pos, Vector3 size, float rot) {
+			this.type = type;
+			data = new float[7];
+			data[0] = pos.x;
+			data[1] = pos.y;
+			data[2] = pos.z;
+			data[3] = size.x;
+			data[4] = size.y;
+			data[5] = size.z;
+			data[6] = rot;
+		}
+
+		public int type;
+		public float[] data;
+	}
+
 	public class PythonLibrary : MonoBehaviour
 	{
 		void Start()
@@ -25,7 +43,12 @@ filename = os.path.abspath ('PythonScripts/helloWorld.py');";
 			source.Execute(scope);
 
 			dynamic py = engine.ExecuteFile(scope.GetVariable<string>("filename"));
-			dynamic pytest = py.Test("by_excelsus");
+
+			List<float> floatList = new List<float>();
+			for(float i = 0; i < 16; i++) {
+				floatList.Add(i);
+			}
+			dynamic pytest = py.Test(floatList);
 			Debug.Log(pytest.display());
 		}
 	}
