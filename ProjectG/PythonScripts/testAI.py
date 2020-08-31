@@ -17,5 +17,5 @@ class TestAI():
 
     def solve(self, a, b):
 
-
-        return 1
+        temp = []
+        return temp
