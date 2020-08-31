@@ -7,6 +7,25 @@ using IronPython.Hosting;
 public class DataConverter : MonoBehaviour
 {
 	public string PythonScript;
+	private dynamic PySolverClass;
+
+	public List<Vector3> GetRoute(Vector3 p1, Vector3 p2) {
+		List<float> a, b;
+		a = new List<float>(3);
+		a.Add(p1.x);
+		a.Add(p1.y);
+		a.Add(p1.z);
+		b = new List<float>(3);
+		b.Add(p2.x);
+		b.Add(p2.y);
+		b.Add(p2.z);
+		//IList<float> ret = (IList<float>)PySolverClass.solve(a, b);
+		List<Vector3> pars = new List<Vector3>();
+		//for(int idx = 0; idx < ret.Count; idx += 3) {
+		//	pars.Add(new Vector3(ret[idx], ret[idx + 1], ret[idx + 2]));
+		//}
+		return pars;
+	}
 
 	private float[] Digest(string a, Vector3 b, Vector3 c, Quaternion d) {
 		float[] ret = new float[8];
@@ -45,10 +64,9 @@ public class DataConverter : MonoBehaviour
 		sb.Append(" ]");
 		return sb.ToString();
 	}
-
-    // Start is called before the first frame update
-    void Start()
-    {
+	
+	private void Awake() {
+		PySolverClass = null;
 		// ==========================================
 		// Converting Map into float List
 		var a = GetComponentsInChildren<BoxCollider>();
@@ -79,14 +97,7 @@ filename = os.path.abspath ('PythonScripts/"+PythonScript+"');";
 		source.Execute(scope);
 
 		dynamic py = engine.ExecuteFile(scope.GetVariable<string>("filename"));
-		
-		dynamic pytest = py.TestAI(mapData);
-		Debug.Log(pytest.display());
-	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+		PySolverClass = py.TestAI(mapData);
+	}
 }
