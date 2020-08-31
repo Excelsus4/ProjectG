@@ -80,7 +80,7 @@ filename = os.path.abspath ('PythonScripts/"+PythonScript+"');";
 
 		dynamic py = engine.ExecuteFile(scope.GetVariable<string>("filename"));
 		
-		dynamic pytest = py.Test(mapData);
+		dynamic pytest = py.TestAI(mapData);
 		Debug.Log(pytest.display());
 	}
 
