@@ -5,6 +5,7 @@ class TestAI():
     def display(self):
         tempTuple = []
         result = []
+
         for i in range(0, len(self.fls) / 8):
             for j in range(0, 7):
                 tempTuple.append(self.fls[i * 8 + j])
@@ -16,6 +17,12 @@ class TestAI():
         return result
 
     def solve(self, a, b):
+        result = [0., 0., 0.]
 
-        temp = []
-        return temp
+        for i in range(0, 3):
+            result[i] = (a[i] + b[i]) / 2
+        
+        #print(result)
+        #checkPoint = "check2"
+
+        return result
