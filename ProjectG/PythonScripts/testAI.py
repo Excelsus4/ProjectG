@@ -19,10 +19,10 @@ class TestAI():
     def solve(self, a, b):
         result = [0., 0., 0.]
 
-        for i in range(0, 3):
-            result[i] = (a[i] + b[i]) / 2
+        #for i in range(0, 3):
+        #    result[i] = (a[i] + b[i]) / 2
         
         #print(result)
         #checkPoint = "check2"
 
-        return result
+        return b
