@@ -19,11 +19,11 @@ public class DataConverter : MonoBehaviour
 		b.Add(p2.x);
 		b.Add(p2.y);
 		b.Add(p2.z);
-		//IList<float> ret = (IList<float>)PySolverClass.solve(a, b);
+		IList<float> ret = (IList<float>)PySolverClass.solve(a, b);
 		List<Vector3> pars = new List<Vector3>();
-		//for(int idx = 0; idx < ret.Count; idx += 3) {
-		//	pars.Add(new Vector3(ret[idx], ret[idx + 1], ret[idx + 2]));
-		//}
+		for(int idx = 0; idx < ret.Count; idx += 3) {
+			pars.Add(new Vector3(ret[idx], ret[idx + 1], ret[idx + 2]));
+		}
 		return pars;
 	}
 
