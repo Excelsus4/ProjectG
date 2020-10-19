@@ -1,6 +1,13 @@
 import math
 import random
+import numpy as np
 
+numGoal = 8
+QTable = np.zeros((numGoal, 1500, 1500, 1500, 1500))
+RTable = np.zeros((1500, 1500, 1500, 1500))
+
+#[ 0.00 , -84.79 , 3.00 , -5.93 , 6.00 , 6.00 , 160.00 , 356.00]
+#타입코드, 중심점(3차원플롯벡터), 크기(3차원플롯벡터), 회전(플롯)
 
 def turn(typeCode, pointX, pointZ, sizeX, sizeZ, seta):
     pointList = []
@@ -15,12 +22,27 @@ def turn(typeCode, pointX, pointZ, sizeX, sizeZ, seta):
     
     return pointList
 
-def makeTable():
+def makeTable(putList):
+    global numGoal
+    global QTable
+    global RTable
+
+    for i in range(0, len(putList) / 8):
+        #turn함수이용
+        pass
+
+    for i in range(0, numGoal):
+        QTable[i] = RTable
     pass
 
-def maxQValue():
-    pass
+def maxQValue(temp):
+    maxValue = 0
+    for i in range(1, 2):
+        if temp[i] > maxValue:
+            maxValue = temp[i]
+    return maxValue
 
+#포인트전송 함수
 def passPoint():
     pass
 
@@ -30,6 +52,9 @@ def passPoint():
 
 
 def QLTrain():
+    global numGoal
+    global QTable
+    global RTable
     #반복횟수 n
     n = 1000
     #목표지점
