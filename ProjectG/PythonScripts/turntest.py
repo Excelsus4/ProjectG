@@ -3,11 +3,14 @@ import random
 import numpy as np
 
 numGoal = 8
-QTable = np.zeros((numGoal, 1500, 1500, 1500, 1500))
-RTable = np.zeros((1500, 1500, 1500, 1500))
+mapTable = np.zeros((1500,1500))
+QTable = np.zeros((numGoal, 1500, 1500, 8))
+RTable = np.zeros((numGoal, 1500, 1500, 8))
+goalList = [(5, 5), (5, 1495)]
 
 #[ 0.00 , -84.79 , 3.00 , -5.93 , 6.00 , 6.00 , 160.00 , 356.00]
 #타입코드, 중심점(3차원플롯벡터), 크기(3차원플롯벡터), 회전(플롯)
+#타입코드 0(벽), 1(인도), 2(횡단보도)
 
 def turn(typeCode, pointX, pointZ, sizeX, sizeZ, seta):
     pointList = []
@@ -15,26 +18,99 @@ def turn(typeCode, pointX, pointZ, sizeX, sizeZ, seta):
     for i in range(round(-1 * sizeX/2), round(sizeX/2 + 1)):
         for j in range(round(-1 * sizeZ/2), round(sizeZ/2 + 1)):
             x = i * math.cos(seta) - j * math.sin(seta)
-            x = round(x) + pointX
+            x = round(x + pointX)
             z = i * math.sin(seta) + j * math.cos(seta)
-            z = round(z) + pointZ
+            z = round(z + pointZ)
             pointList.append([x, z])
     
     return pointList
 
-def makeTable(putList):
+def makeMap(putList):
+    global mapTable
+
+    for i in range(0, len(putList) / 8):
+        typeCode = putList[i * 8]
+        pointX = putList[i * 8 + 1]
+        pointY = putList[i * 8 + 3]
+        sizeX = putList[i * 8 + 4]
+        sizeZ = putList[i * 8 + 6]
+        seta = putList[i * 8 + 7]
+
+        #turn & put map
+        for j in range(round(-1 * sizeX/2), round(sizeX/2 + 1)):
+            for k in range(round(-1 * sizeZ/2), round(sizeZ/2 + 1)):
+                x = j * math.cos(seta) - k * math.sin(seta)
+                x = round(x + pointX)
+                z = j * math.sin(seta) + k * math.cos(seta)
+                z = round(z + pointZ)
+                mapTable[x][z] = typeCode
+
+# 7 0 1
+# 6 * 2
+# 5 4 3
+
+
+#다음 위치 구하는 함수 추가(이 함수에서 분리)
+def checkValue(goalNum, pointX, pointY, di):
+    global mapTable
+    global goalList
+
+    if di == 0:
+        x = pointX
+        y = pointY - 1
+    elif di == 1:
+        x = pointX + 1
+        y = pointY - 1
+    elif di == 2:
+        x = pointX + 1
+        y = pointY
+    elif di == 3:
+        x = pointX + 1
+        y = pointY + 1
+    elif di == 4:
+        x = pointX
+        y = pointY + 1
+    elif di == 5:
+        x = pointX - 1
+        y = pointY + 1
+    elif di == 6:
+        x = pointX - 1
+        y = pointY
+    elif di == 7:
+        x = pointX - 1
+        y = pointY - 1
+    
+    if (x,y) is goalList[goalNum]:
+        return 1000
+
+    if x < 0 or y < 0 or x > 1500 or y > 1500:
+        return -2
+    elif mapTable[x][y] == 0:
+        return -1
+    elif mapTable[x][y] == 1 or mapTable[x][y] == 2:
+        return 0
+    
+    return 0
+
+
+def makeTable():
+    global mapTable
     global numGoal
     global QTable
     global RTable
+    global goalList
 
-    for i in range(0, len(putList) / 8):
-        #turn함수이용
-        pass
+    for w in range(0, len(goalList)):
+        for i in range(0, 1500):
+            for j in range(0, 1500):
+                for k in range(0, 8):
+                    if checkValue(i, j, k) is not -2:
+                        RTable[w][i][j][k] = checkValue(w, i, j, k)
 
-    for i in range(0, numGoal):
-        QTable[i] = RTable
-    pass
+    QTable = RTable
 
+
+#미완
 def maxQValue(temp):
     maxValue = 0
     for i in range(1, 2):
@@ -46,29 +122,24 @@ def maxQValue(temp):
 def passPoint():
     pass
 
-#Tabel
-#QTable[1~x][0~1500][0~1500][0~1500][0~1500]
-#RTable[0~1500][0~1500][0~1500][0~1500]
-
 
 def QLTrain():
     global numGoal
     global QTable
     global RTable
+    global goalList
     #반복횟수 n
     n = 1000
-    #목표지점
-    goal = [(5, 5), (5, 1495)]
 
-    for j in range(1, len(goal)):
+    for j in range(1, len(goalList)):
         for i in range(1, n):
             myPoint = (random.randrange(5, 1500), random.randrange(5, 1500))
-            while myPoint == goal[j]:
-                nextPoint = (random.randrange(5, 1500), random.randrange(5, 1500))
-                while RTable[myPoint[0]][myPoint[1]][nextPoint[0]][nextPoint[1]] is not -1:
-                    nextPoint = (random.randrange(5, 1500), random.randrange(5, 1500))
-                QTable[j][myPoint[0]][myPoint[1]][nextPoint[0]][nextPoint[1]] = 
-                    RTable[myPoint[0]][myPoint[1]][nextPoint[0]][nextPoint[1]] +
+            while myPoint == goalList[j]:
+                nextPoint = random.randrange(0, 8)
+                while RTable[j][myPoint[0]][myPoint[1]][nextPoint] is not -1:
+                    nextPoint = random.randrange(0, 8)
+                QTable[j][myPoint[0]][myPoint[1]][nextPoint] = 
+                    RTable[j][myPoint[0]][myPoint[1]][nextPoint] +
                     alpha * max()#max(Q(next state, all actions))
                 myPoint = nextPoint
                 #다음포인트 전송
@@ -77,14 +148,14 @@ def QLTrain():
     #state
 
 def QL(myPoint):
-    while myPoint == goal[j]:
+    while myPoint == goalList[j]:
         nextPoint = max()#max(Q(next state, all actions))
         myPoint = nextPoint
         #다음 포인트 전송
 
 
 def main():
-    print(turn(0, -84.79, -5.93, 6.00, 160.00, 356.00))
+    #print(turn(0, -84.79, -5.93, 6.00, 160.00, 356.00))
     #print(takeSeta(0, 0, 1, 1))
     print("check")
     pass
