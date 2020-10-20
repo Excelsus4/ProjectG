@@ -2,7 +2,7 @@ import math
 import random
 import numpy as np
 
-numGoal = 8
+numGoal = 2
 mapTable = np.zeros((1500,1500))
 QTable = np.zeros((numGoal, 1500, 1500, 8))
 RTable = np.zeros((numGoal, 1500, 1500, 8))
@@ -24,6 +24,17 @@ def turn(typeCode, pointX, pointZ, sizeX, sizeZ, seta):
             pointList.append([x, z])
     
     return pointList
+
+def putGoal():
+    global goalList
+    global numGoal
+
+    numGoal = input("number of Goal : ")
+    for i in range(0, numGoal):
+        x = input("x location : ")
+        z = input("z location : ")
+        goalList.append((x, z))
+
 
 def makeMap(putList):
     global mapTable
@@ -49,12 +60,7 @@ def makeMap(putList):
 # 6 * 2
 # 5 4 3
 
-
-#다음 위치 구하는 함수 추가(이 함수에서 분리)
-def checkValue(goalNum, pointX, pointY, di):
-    global mapTable
-    global goalList
-
+def nextLoc(pointX, pointY, di):
     if di == 0:
         x = pointX
         y = pointY - 1
@@ -79,6 +85,15 @@ def checkValue(goalNum, pointX, pointY, di):
     elif di == 7:
         x = pointX - 1
         y = pointY - 1
+
+    return (x, y)
+
+
+def checkValue(goalNum, pointX, pointY, di):
+    global mapTable
+    global goalList
+
+    (x, y) = nextLoc(pointX, pointY, di)
     
     if (x,y) is goalList[goalNum]:
         return 1000
@@ -110,13 +125,28 @@ def makeTable():
     QTable = RTable
 
 
-#미완
-def maxQValue(temp):
+
+def maxQValue(tableNum, nextState):
+    global QTable
+
     maxValue = 0
-    for i in range(1, 2):
-        if temp[i] > maxValue:
-            maxValue = temp[i]
+
+    for i in range(0, 8):
+        if QTable[tableNum][nextState[0]][nextState[1]][i] > maxValue:
+            maxValue = QTable[tableNum][nextState[0]][nextState[1]][i]
     return maxValue
+
+def maxQDi(tableNum, myState):
+    global QTable
+
+    maxValue = 0
+    maxDi = 0
+
+    for i in range(0, 8):
+        if QTable[tableNum][myState[0]][myState[1]][i] > maxValue:
+            maxValue = QTable[tableNum][myState[0]][myState[1]][i]
+            maxDi = i
+    return maxDi
 
 #포인트전송 함수
 def passPoint():
@@ -138,18 +168,24 @@ def QLTrain():
                 nextPoint = random.randrange(0, 8)
                 while RTable[j][myPoint[0]][myPoint[1]][nextPoint] is not -1:
                     nextPoint = random.randrange(0, 8)
+                nextState = nextLoc(myPoint[0], myPoint[1], nextPoint)
+                
                 QTable[j][myPoint[0]][myPoint[1]][nextPoint] = 
                     RTable[j][myPoint[0]][myPoint[1]][nextPoint] +
-                    alpha * max()#max(Q(next state, all actions))
+                    alpha * maxQValue(j, nextState)
                 myPoint = nextPoint
                 #다음포인트 전송
 
     return 1
     #state
 
-def QL(myPoint):
-    while myPoint == goalList[j]:
-        nextPoint = max()#max(Q(next state, all actions))
+def QL(tableNum, myPoint):
+    global QTable
+    global goalList
+
+    while myPoint == goalList[tableNum]:
+        nextDi = maxQDi(tableNum, myPoint)
+        nextPoint = nextLoc(myPoint[0], myPoint[1], nextDi)
         myPoint = nextPoint
         #다음 포인트 전송
 
