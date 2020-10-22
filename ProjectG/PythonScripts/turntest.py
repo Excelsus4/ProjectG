@@ -2,11 +2,11 @@ import math
 import random
 import numpy as np
 
-numGoal = 2
+numGoal = 1
 mapTable = np.zeros((1500,1500))
 QTable = np.zeros((numGoal, 1500, 1500, 8))
 RTable = np.zeros((numGoal, 1500, 1500, 8))
-goalList = [(5, 5), (5, 1495)]
+goalList = [(5, 5)]
 
 #[ 0.00 , -84.79 , 3.00 , -5.93 , 6.00 , 6.00 , 160.00 , 356.00]
 #타입코드, 중심점(3차원플롯벡터), 크기(3차원플롯벡터), 회전(플롯)
@@ -30,6 +30,11 @@ def putGoal():
     global numGoal
 
     numGoal = input("number of Goal : ")
+    if numGoal < 1:
+        print("최소 1 이상")
+        numGoal = input("number of Goal : ")
+
+    goalList = []
     for i in range(0, numGoal):
         x = input("x location : ")
         z = input("z location : ")
