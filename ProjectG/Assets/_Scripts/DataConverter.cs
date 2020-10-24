@@ -9,6 +9,8 @@ public class DataConverter : MonoBehaviour
 	public string PythonScript;
 	private dynamic PySolverClass;
 
+	public ExitPointCollector ep;
+
 	public List<Vector3> GetRoute(Vector3 p1, Vector3 p2) {
 		List<float> a, b;
 		a = new List<float>(3);
@@ -75,7 +77,7 @@ public class DataConverter : MonoBehaviour
 			mapData.AddRange(Digest(b.tag, b.transform.position, b.transform.lossyScale, b.transform.rotation));
 		}
 		//Debug.Log(tString(mapData.ToArray()));
-
+		//Debug.Log(tString(ep.c.ToArray()));
 
 		// ==========================================
 		// Python Engine
@@ -98,6 +100,9 @@ filename = os.path.abspath ('PythonScripts/"+PythonScript+"');";
 
 		dynamic py = engine.ExecuteFile(scope.GetVariable<string>("filename"));
 
-		PySolverClass = py.TestAI(mapData);
+
+		// 1. mapData
+		// 2. ep.c
+		PySolverClass = py.TestAI(mapData, ep.c);
 	}
 }

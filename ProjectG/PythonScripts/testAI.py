@@ -1,6 +1,7 @@
 class TestAI():
-    def __init__(self, fls):
+    def __init__(self, fls, exitP):
         self.fls = fls
+        self.exitP = exitP
 
     def display(self):
         tempTuple = []
