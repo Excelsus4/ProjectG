@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pathfinder : MonoBehaviour
 {
-	public Vector3 EndLocation;
+	public Transform EndLocation;
 	public float MoveSpeed;
 	public int Interval;
 	private Animator animator;
@@ -22,7 +22,7 @@ public class Pathfinder : MonoBehaviour
     }
 
 	private void UpdateRoute() {
-		route = finder.GetRoute(transform.position, EndLocation);
+		route = finder.GetRoute(transform.position, EndLocation.position);
 		if (route.Count > 0) {
 			CurrentNode = 0;
 			isMoving = true;
