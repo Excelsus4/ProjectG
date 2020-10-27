@@ -76,7 +76,7 @@ public class DataConverter : MonoBehaviour
 		foreach (var b in a) {
 			mapData.AddRange(Digest(b.tag, b.transform.position, b.transform.lossyScale, b.transform.rotation));
 		}
-		//Debug.Log(tString(mapData.ToArray()));
+		Debug.Log(tString(mapData.ToArray()));
 		//Debug.Log(tString(ep.c.ToArray()));
 
 		// ==========================================
