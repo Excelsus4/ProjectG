@@ -10,6 +10,7 @@ public class DataConverter : MonoBehaviour
 	private dynamic PySolverClass;
 
 	public ExitPointCollector ep;
+	public bool UnityDebugMode;
 
 	public List<Vector3> GetRoute(Vector3 p1, Vector3 p2) {
 		List<float> a, b;
@@ -22,8 +23,8 @@ public class DataConverter : MonoBehaviour
 		b.Add(p2.y);
 		b.Add(p2.z);
 		Debug.Log("GetRoute");
-		Debug.Log(tString(a.ToArray()));
-		Debug.Log(tString(b.ToArray()));
+		Debug.Log(tString(a.ToArray(), 3));
+		Debug.Log(tString(b.ToArray(), 3));
 		IList<float> ret = (IList<float>)PySolverClass.solve(a, b);
 		List<Vector3> pars = new List<Vector3>();
 		for(int idx = 0; idx < ret.Count; idx += 3) {
@@ -61,12 +62,15 @@ public class DataConverter : MonoBehaviour
 		return ret;
 	}
 
-	private string tString(float[] f) {
+	private string tString(float[] f, int cut) {
 		StringBuilder sb = new StringBuilder();
 		sb.Append("[ ");
 		for(int i = 0; i < f.Length-1; i++) {
 			sb.Append(f[i].ToString("F"));
-			sb.Append(" , ");
+			if ((i+1) % cut == 0)
+				sb.Append("\n");
+			else
+				sb.Append(" , ");
 		}
 		sb.Append(f[f.Length - 1].ToString("F"));
 		sb.Append(" ]");
@@ -81,16 +85,23 @@ public class DataConverter : MonoBehaviour
 		var b = GetComponentsInChildren<MeshCollider>();
 
 		List<float> mapData = new List<float>((a.Length + b.Length) * 8);
-		foreach (var t in a) {
-			mapData.AddRange(Digest(t.tag, t.transform.position, t.transform.lossyScale, t.transform.rotation));
-		}
 
 		foreach (var t in b) {
 			mapData.AddRange(Digest(t.tag, t.transform.position, t.transform.lossyScale, t.transform.rotation));
 		}
 
-		Debug.Log(tString(mapData.ToArray()));
-		Debug.Log(tString(ep.c.ToArray()));
+		foreach (var t in a) {
+			if(t.tag != "Wall")
+				mapData.AddRange(Digest(t.tag, t.transform.position, t.transform.lossyScale, t.transform.rotation));
+		}
+
+		foreach (var t in a) {
+			if (t.tag == "Wall")
+				mapData.AddRange(Digest(t.tag, t.transform.position, t.transform.lossyScale, t.transform.rotation));
+		}
+
+		Debug.Log(tString(mapData.ToArray(), 8));
+		Debug.Log(tString(ep.c.ToArray(), 3));
 
 		// ==========================================
 		// Python Engine
@@ -116,6 +127,7 @@ filename = os.path.abspath ('PythonScripts/"+PythonScript+"');";
 
 		// 1. mapData
 		// 2. ep.c
-		PySolverClass = py.TestAI(mapData, ep.c);
+		if(!UnityDebugMode)
+			PySolverClass = py.TestAI(mapData, ep.c);
 	}
 }
