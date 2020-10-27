@@ -21,6 +21,9 @@ public class DataConverter : MonoBehaviour
 		b.Add(p2.x);
 		b.Add(p2.y);
 		b.Add(p2.z);
+		Debug.Log("GetRoute");
+		Debug.Log(tString(a.ToArray()));
+		Debug.Log(tString(b.ToArray()));
 		IList<float> ret = (IList<float>)PySolverClass.solve(a, b);
 		List<Vector3> pars = new List<Vector3>();
 		for(int idx = 0; idx < ret.Count; idx += 3) {
