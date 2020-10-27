@@ -17,6 +17,6 @@ public class ExitPointCollector : MonoBehaviour {
 			c.Add(b.transform.position.z);
 		}
 
-		print(c);
+		//print(c);
 	}
 }

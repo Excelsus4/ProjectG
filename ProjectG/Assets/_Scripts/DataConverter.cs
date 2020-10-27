@@ -72,12 +72,19 @@ public class DataConverter : MonoBehaviour
 		// ==========================================
 		// Converting Map into float List
 		var a = GetComponentsInChildren<BoxCollider>();
-		List<float> mapData = new List<float>(a.Length * 8);
-		foreach (var b in a) {
-			mapData.AddRange(Digest(b.tag, b.transform.position, b.transform.lossyScale, b.transform.rotation));
+		var b = GetComponentsInChildren<MeshCollider>();
+
+		List<float> mapData = new List<float>((a.Length + b.Length) * 8);
+		foreach (var t in a) {
+			mapData.AddRange(Digest(t.tag, t.transform.position, t.transform.lossyScale, t.transform.rotation));
 		}
+
+		foreach (var t in b) {
+			mapData.AddRange(Digest(t.tag, t.transform.position, t.transform.lossyScale, t.transform.rotation));
+		}
+
 		Debug.Log(tString(mapData.ToArray()));
-		//Debug.Log(tString(ep.c.ToArray()));
+		Debug.Log(tString(ep.c.ToArray()));
 
 		// ==========================================
 		// Python Engine
