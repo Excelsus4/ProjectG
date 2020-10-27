@@ -31,6 +31,12 @@ public class DataConverter : MonoBehaviour
 
 	private float[] Digest(string a, Vector3 b, Vector3 c, Quaternion d) {
 		float[] ret = new float[8];
+		ret[1] = b.x;
+		ret[2] = b.y;
+		ret[3] = b.z;
+		ret[4] = c.x;
+		ret[5] = c.y;
+		ret[6] = c.z;
 		switch (a) {
 		case "Wall":
 			ret[0] = .0f;
@@ -40,17 +46,14 @@ public class DataConverter : MonoBehaviour
 			break;
 		case "Cross":
 			ret[0] = 2.0f;
+			ret[4] *= 10;
+			ret[5] *= 10;
+			ret[6] *= 10;
 			break;
 		default:
 			ret[0] = .0f;
 			break;
 		}
-		ret[1] = b.x;
-		ret[2] = b.y;
-		ret[3] = b.z;
-		ret[4] = c.x;
-		ret[5] = c.y;
-		ret[6] = c.z;
 		ret[7] = d.eulerAngles.y;
 		return ret;
 	}
