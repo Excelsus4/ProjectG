@@ -8,15 +8,19 @@ class TestAI():
 
     def __init__(self, fls, exitP):
         self.fls = fls          #building float list
+        self.fls = [ 1.00 , -49.20 , 0.25 , 70.10 , 32.61 , 0.50 , 63.70 , 17.46 , 1.00 , -66.10 , 0.25 , 67.30 , 47.60 , 0.50 , 63.70 , 1.60 , 1.00 , 0.79 , 0.25 , 52.87 , 19.90 , 0.50 , 39.60 , 20.00 , 1.00 , 12.91 , 0.25 , 42.71 , 38.90 , 0.50 , 30.60 , 10.00 , 1.00 , -10.34 , 0.25 , 36.05 , 9.50 , 0.50 , 5.00 , 45.90 , 1.00 , 22.49 , 0.25 , 59.50 , 12.16 , 0.50 , 23.40 , 320.00 , 1.00 , 8.55 , 0.25 , 69.57 , 8.20 , 0.50 , 21.46 , 276.78 , 1.00 , 26.50 , 0.25 , -10.00 , 10.00 , 0.50 , 40.80 , 7.00 , 1.00 , 6.31 , 0.25 , 7.61 , 35.60 , 0.50 , 8.79 , 4.00 , 1.00 , 6.95 , 0.25 , -9.57 , 45.80 , 0.50 , 8.79 , 47.90 , 1.00 , 11.30 , 0.25 , -0.30 , 25.85 , 0.50 , 8.79 , 4.00 , 2.00 , -27.50 , 0.01 , 42.20 , 5.00 , 10.00 , 38.30 , 282.30 , 2.00 , -7.89 , 0.01 , 23.27 , 5.00 , 10.00 , 21.10 , 4.02 ]
         self.exitP = exitP      #exitpoint float list
+        self.exitP = [ 15.00 , 0.00 , -1.00 ]
 
         self.numGoal = int(len(exitP) // 3)
+        #self.numGoal = 4
         self.xLength = 400
         self.yLength = 400
         self.goalList = []
         self.buildingList = []
         self.mapTable = [[0 for i in range(0, int(self.yLength))] for j in range(0, int(self.xLength))]
         self.QTable = [[[[0 for i in range(0,8)] for j in range(0, int(self.yLength))] for k in range(0, int(self.xLength))] for l in range(0, int(self.numGoal))]
+        #self.RTable = [[[[0 for i in range(0,8)] for j in range(0, 8)] for k in range(0, 8)] for l in range(0, 8)]
         self.RTable = [[[[0 for i in range(0,8)] for j in range(0, int(self.yLength))] for k in range(0, int(self.xLength))] for l in range(0, int(self.numGoal))]
 
         f = open("1. check.txt", 'w')
@@ -39,9 +43,9 @@ class TestAI():
         f.close
 
         f = open("3. goalFile.txt", 'w')
-        #for i in range(0, int(len(self.goalList))):
-        #    f.write(str(self.goalList[i]))
-        #    f.write(" ")
+        for i in range(0, int(len(self.goalList))):
+            f.write(str(self.goalList[i]))
+            f.write(" ")
         f.close
 
         self.makeMap()
@@ -81,14 +85,14 @@ class TestAI():
         for i in range(0, int(len(self.fls) // 8)):
             tempTuple = []
             for j in range(0, 8):
-                tempTuple.append(int(self.fls[i * 8 + j]))
+                tempTuple.append(float(self.fls[i * 8 + j]))
             self.buildingList.append(tempTuple)
         
         tempTuple = []
         for i in range(0, int((len(self.exitP) // 3))):
             tempTuple = []
-            tempTuple.append(int(self.exitP[i * 3]))
-            tempTuple.append(int(self.exitP[i * 3 + 2]))
+            tempTuple.append(float(self.exitP[i * 3]))
+            tempTuple.append(float(self.exitP[i * 3 + 2]))
             self.goalList.append(tempTuple)
 
         return self.buildingList
@@ -111,6 +115,15 @@ class TestAI():
                 z = i * math.sin(seta) + j * math.cos(seta)
                 z = int(round(z + pointZ))
                 pointList.append([x, z])
+
+                x = j
+                z = k
+                x = x * math.cos(seta) - z * math.sin(seta)
+                z = x * math.sin(seta) + z * math.cos(seta)
+                x = x + pointX
+                z = z + pointZ
+                x = int(round(x)) + 200
+                z = int(round(z)) + 200
         
         return pointList
 
@@ -132,21 +145,26 @@ class TestAI():
             sizeX = self.buildingList[i][4]
             sizeZ = self.buildingList[i][6]
             seta = self.buildingList[i][7]
+            seta = seta / 180 * math.pi * -1
 
             #turn & put map
             for j in range(int(round(-1 * sizeX//2)), int(round(sizeX//2 + 1))):
                 for k in range(int(round(-1 * sizeZ//2)), int(round(sizeZ//2 + 1))):
                     x = j * math.cos(seta) - k * math.sin(seta)
-                    x = int(round(x + pointX)) + 200
                     z = j * math.sin(seta) + k * math.cos(seta)
-                    z = int(round(z + pointZ)) + 200
-                    self.mapTable[x][z] = typeCode
+                    x = x + pointX
+                    z = z + pointZ
+                    x = int(round(x)) + 200
+                    z = 200 - int(round(z))
+                    self.mapTable[x][z] = int(typeCode)
         
         for i in range(1, int(self.xLength) - 1):
             for j in range(1, int(self.yLength) - 1):
                 if self.mapTable[i][j] == 0:
                     if self.mapTable[i-1][j] == 1 and self.mapTable[i+1][j] == 1 and self.mapTable[i][j-1] == 1 and self.mapTable[i][j+1] == 1:
                         self.mapTable[i][j] = 1
+                    elif self.mapTable[i-1][j] == 2 and self.mapTable[i+1][j] == 2 and self.mapTable[i][j-1] == 2 and self.mapTable[i][j+1] == 2:
+                        self.mapTable[i][j] = 2
 
     # 7 0 1
     # 6 * 2
