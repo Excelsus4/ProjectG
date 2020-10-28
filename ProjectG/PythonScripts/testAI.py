@@ -87,16 +87,16 @@ class TestAI():
         tempTuple = []
         for i in range(0, int((len(self.exitP) // 3))):
             tempTuple = []
-            tempTuple.append(int(self.exitP[i * 3] + 200))
-            tempTuple.append(int(200 - self.exitP[i * 3 + 2]))
+            tempTuple.append(int(self.exitP[i * 3] + self.xLength // 2))
+            tempTuple.append(int(self.yLength // 2 - self.exitP[i * 3 + 2]))
             self.goalList.append(tempTuple)
 
         return self.buildingList
 
 
     def solve(self, a, b):
-        startPoint = [int(a[0] + 400), int(400 - a[2])]
-        endPoint = [int(b[0] + 400), int(400 - b[2])]
+        startPoint = [int(a[0] + self.xLength // 2), int(self.yLength // 2 - a[2])]
+        endPoint = [int(b[0] + self.xLength // 2), int(self.yLength // 2 - b[2])]
         endNum = self.findTabel(endPoint)
         result = self.QL(endNum, startPoint)                 #need CHANGE!!!!!!!!!!!!!!!!!
 
@@ -121,8 +121,8 @@ class TestAI():
                     z = j * math.sin(seta) + k * math.cos(seta)
                     x = x + pointX
                     z = z + pointZ
-                    x = int(round(x)) + 200
-                    z = 200 - int(round(z))
+                    x = int(round(x)) + self.xLength // 2
+                    z = self.yLength // 2 - int(round(z))
                     self.mapTable[x][z] = int(typeCode)
         
         for i in range(1, int(self.xLength) - 1):
@@ -198,6 +198,15 @@ class TestAI():
         elif di == 7:
             x = pointX - 1
             y = pointY - 1
+        
+        if pointX < 0:
+            pointX = 0
+        elif pointX > int(self.xLength):
+            pointX = int(self.xLength)
+        if pointY < 0:
+            pointY = 0
+        elif pointY > int(self.yLength):
+            pointY = int(self.yLength)
 
         return x, y
 
@@ -258,7 +267,7 @@ class TestAI():
 
     def QLTrain(self):
         #repeat n
-        n = 10
+        n = 50
         alpha = 0.5
 
         f = open("7. QLTrainCheck.txt", 'w')
@@ -349,16 +358,22 @@ class TestAI():
         while myPoint != self.goalList[tableNum]:
             nextDi = int(self.maxQDi(tableNum, myPoint))
             nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
-            lootList.append(nextPoint)
-            myPoint = nextPoint
+            lootList.append(float(nextPoint[0] - self.xLength//2))
+            lootList.append(0.0)
+            lootList.append(self.yLength//2 - float(nextPoint[1]))
+            myPoint[0] = int(nextPoint[0])
+            myPoint[1] = int(nextPoint[1])
             #pass nextpoint
         
         
-        for i in range(0, len(lootList)):
-            f.write(str(lootList[i][0]))
+        for i in range(0, int(len(lootList) // 3)):
+            f.write(str(lootList[i*3]))
             f.write(" ")
-            f.write(str(lootList[i][1]))
+            f.write(str(lootList[i*3 + 1]))
+            f.write(" ")
+            f.write(str(lootList[i*3 + 2]))
             f.write("\n")
         f.close
         
         return lootList
+
