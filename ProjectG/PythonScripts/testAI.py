@@ -8,19 +8,15 @@ class TestAI():
 
     def __init__(self, fls, exitP):
         self.fls = fls          #building float list
-        self.fls = [ 1.00 , -49.20 , 0.25 , 70.10 , 32.61 , 0.50 , 63.70 , 17.46 , 1.00 , -66.10 , 0.25 , 67.30 , 47.60 , 0.50 , 63.70 , 1.60 , 1.00 , 0.79 , 0.25 , 52.87 , 19.90 , 0.50 , 39.60 , 20.00 , 1.00 , 12.91 , 0.25 , 42.71 , 38.90 , 0.50 , 30.60 , 10.00 , 1.00 , -10.34 , 0.25 , 36.05 , 9.50 , 0.50 , 5.00 , 45.90 , 1.00 , 22.49 , 0.25 , 59.50 , 12.16 , 0.50 , 23.40 , 320.00 , 1.00 , 8.55 , 0.25 , 69.57 , 8.20 , 0.50 , 21.46 , 276.78 , 1.00 , 26.50 , 0.25 , -10.00 , 10.00 , 0.50 , 40.80 , 7.00 , 1.00 , 6.31 , 0.25 , 7.61 , 35.60 , 0.50 , 8.79 , 4.00 , 1.00 , 6.95 , 0.25 , -9.57 , 45.80 , 0.50 , 8.79 , 47.90 , 1.00 , 11.30 , 0.25 , -0.30 , 25.85 , 0.50 , 8.79 , 4.00 , 2.00 , -27.50 , 0.01 , 42.20 , 5.00 , 10.00 , 38.30 , 282.30 , 2.00 , -7.89 , 0.01 , 23.27 , 5.00 , 10.00 , 21.10 , 4.02 ]
         self.exitP = exitP      #exitpoint float list
-        self.exitP = [ 15.00 , 0.00 , -1.00 ]
 
         self.numGoal = int(len(exitP) // 3)
-        #self.numGoal = 4
         self.xLength = 400
         self.yLength = 400
         self.goalList = []
         self.buildingList = []
         self.mapTable = [[0 for i in range(0, int(self.yLength))] for j in range(0, int(self.xLength))]
         self.QTable = [[[[0 for i in range(0,8)] for j in range(0, int(self.yLength))] for k in range(0, int(self.xLength))] for l in range(0, int(self.numGoal))]
-        #self.RTable = [[[[0 for i in range(0,8)] for j in range(0, 8)] for k in range(0, 8)] for l in range(0, 8)]
         self.RTable = [[[[0 for i in range(0,8)] for j in range(0, int(self.yLength))] for k in range(0, int(self.xLength))] for l in range(0, int(self.numGoal))]
 
         f = open("1. check.txt", 'w')
@@ -68,14 +64,14 @@ class TestAI():
             f.write("\n")
         f.close
 
-        f = open("6. QTableFile.txt", 'w')
-        for i in range(0, 8):
-            for j in range(0, int(self.yLength)):
-                for k in range(0, int(self.xLength)):
-                    for l in range(0, int(self.numGoal)):
-                        f.write(str(self.QTable[l][k][j][i]))
-            f.write("\n")
-        f.close
+        #f = open("6. QTableFile.txt", 'w')
+        #for i in range(0, 8):
+        #    for j in range(0, int(self.yLength)):
+        #        for k in range(0, int(self.xLength)):
+        #            for l in range(0, int(self.numGoal)):
+        #                f.write(str(self.QTable[l][k][j][i]))
+        #    f.write("\n")
+        #f.close
 
         self.QLTrain()
 
@@ -91,8 +87,8 @@ class TestAI():
         tempTuple = []
         for i in range(0, int((len(self.exitP) // 3))):
             tempTuple = []
-            tempTuple.append(float(self.exitP[i * 3]))
-            tempTuple.append(float(self.exitP[i * 3 + 2]))
+            tempTuple.append(int(self.exitP[i * 3] + 200))
+            tempTuple.append(int(200 - self.exitP[i * 3 + 2]))
             self.goalList.append(tempTuple)
 
         return self.buildingList
@@ -103,39 +99,8 @@ class TestAI():
         result = self.QL(0, startPoint)                 #need CHANGE!!!!!!!!!!!!!!!!!
 
         return result
-    
-
-    def turn(self, typeCode, pointX, pointZ, sizeX, sizeZ, seta):
-        pointList = []
-
-        for i in range(int(round(-1 * sizeX//2)), int(round(sizeX//2 + 1))):
-            for j in range(int(round(-1 * sizeZ//2)), int(round(sizeZ//2 + 1))):
-                x = i * math.cos(seta) - j * math.sin(seta)
-                x = int(round(x + pointX))
-                z = i * math.sin(seta) + j * math.cos(seta)
-                z = int(round(z + pointZ))
-                pointList.append([x, z])
-
-                x = j
-                z = k
-                x = x * math.cos(seta) - z * math.sin(seta)
-                z = x * math.sin(seta) + z * math.cos(seta)
-                x = x + pointX
-                z = z + pointZ
-                x = int(round(x)) + 200
-                z = int(round(z)) + 200
-        
-        return pointList
 
     def makeMap(self):
-        #not tuple
-        #for i in range(0, len(self.buildingList) / 8):
-        #    typeCode = self.buildingList[i * 8]
-        #    pointX = self.buildingList[i * 8 + 1]
-        #    pointY = self.buildingList[i * 8 + 3]
-        #    sizeX = self.buildingList[i * 8 + 4]
-        #    sizeZ = self.buildingList[i * 8 + 6]
-        #    seta = self.buildingList[i * 8 + 7]
         
         #tuple
         for i in range(0, int(len(self.buildingList))):
@@ -165,6 +130,33 @@ class TestAI():
                         self.mapTable[i][j] = 1
                     elif self.mapTable[i-1][j] == 2 and self.mapTable[i+1][j] == 2 and self.mapTable[i][j-1] == 2 and self.mapTable[i][j+1] == 2:
                         self.mapTable[i][j] = 2
+                else:
+                    if self.mapTable[i-1][j] == 0 and self.mapTable[i+1][j] == 0 and self.mapTable[i][j-1] == 0 and self.mapTable[i][j+1] == 0:
+                        self.mapTable[i][j] = 0
+
+
+    #def takeSeta(self, pointX1, pointY1, pointX2, pointY2):
+    #if pointX1 == pointX2:
+    #    return 90
+    #return math.atan(abs((pointY2 - pointY1) / (pointX2 - pointX1)))*180/math.pi
+
+    #def takeTable(self, seta):
+    #    if (seta >= 0 and seta < 22.5) or (seta >= 337.5 and seta < 360):
+    #        return 2
+    #    elif seta >= 22.5 and seta < 67.5:
+    #        return 1
+    #    elif seta >= 67.5 and seta < 112.5:
+    #        return 0
+    #    elif seta >= 112.5 and seta < 157.5:
+    #        return 7
+    #    elif seta >= 157.5 and seta < 202.5:
+    #        return 6
+    #    elif seta >= 202.5 and seta < 247.5:
+    #        return 5
+    #    elif seta >= 247.5 and seta < 292.5:
+    #        return 4
+    #    elif seta >= 292.5 and seta < 337.5:
+    #        return 3
 
     # 7 0 1
     # 6 * 2
@@ -254,37 +246,73 @@ class TestAI():
 
     def QLTrain(self):
         #repeat n
-        n = 10
+        n = 5
         alpha = 0.5
 
         f = open("7. QLTrainCheck.txt", 'w')
         f.write("check open\n")
 
         for j in range(1, int(len(self.goalList))):
-            for i in range(1, n):
-                myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
+            #for i in range(1, n):
+            i = 0
+            myPoint = [0, 0]
+            while i < n:
+                #myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
+                myPoint = [int(random.randrange(int(max(5, self.goalList[j][0] - 10 - i)), int(min(395, self.goalList[j][0] + 10 + i)))), int(random.randrange(int(max(5, self.goalList[j][1] - 10 - i)), int(min(395, self.goalList[j][1] + 10 + i))))]
                 #if myPoint type is block do again
                 while self.mapTable[myPoint[0]][myPoint[1]] != 0:
-                    myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
+                    #myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
+                    myPoint = [int(random.randrange(int(max(5, self.goalList[j][0] - 10 - i)), int(min(395, self.goalList[j][0] + 10 + i)))), int(random.randrange(int(max(5, self.goalList[j][1] - 10 - i)), int(min(395, self.goalList[j][1] + 10 + i))))]
                 firstStartPoint = myPoint
                 checkLoop = 0
+                checkStep = 0
+                nextPoint = [0, 0]
                 while myPoint != self.goalList[j]:
-                    nextPoint = random.randrange(0, 8)
-                    nextPoint = int(round(nextPoint))
-                    while self.RTable[j][myPoint[0]][myPoint[1]][nextPoint] == -1:
-                        nextPoint = random.randrange(0, 8)
-                        nextPoint = round(nextPoint)
-                    nextState = self.nextLoc(myPoint[0], myPoint[1], nextPoint)
-                    
-                    self.QTable[j][myPoint[0]][myPoint[1]][nextPoint] = self.RTable[j][myPoint[0]][myPoint[1]][nextPoint] + alpha * self.maxQValue(j, nextState)
-                    myPoint = nextPoint
+                    #randomChoose = random.randrange(0, 100)
+                    #if randomChoose < 30:
+                    #    nextDi = takeTable(takeSeta(myPoint[0], myPoint[1], self.goalList[j][0], self.goalList[j][1]))
+                    #else:
+                    nextDi = random.randrange(0, 8)
+                    nextDi = int(round(nextDi))
+                    checkFailStart = 0
+
+                    while self.RTable[j][myPoint[0]][myPoint[1]][nextDi] == -1:
+                        nextDi = random.randrange(0, 8)
+                        nextDi = int(round(nextDi))
+                        checkFailStart = checkFailStart + 1
+                        if checkFailStart > 50:
+                            myPoint = self.goalList[j]
+                            break
+                    nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
+
+                    self.QTable[j][myPoint[0]][myPoint[1]][nextDi] = self.RTable[j][myPoint[0]][myPoint[1]][nextDi] + alpha * self.maxQValue(j, nextPoint)
+                    myPoint[0] = nextPoint[0]
+                    myPoint[1] = nextPoint[1]
+
+                    checkStep = checkStep + 1
+                    if checkStep > 1000:
+                        myPoint = self.goalList[j]
+                        #i = i - 1
+
                     if myPoint == firstStartPoint:
                         checkLoop = checkLoop + 1
                     if checkLoop > 100:
                         myPoint = self.goalList[j]
+                
+                i = i + 1
+
+                f.write("check 1\n")
 
                     #pass nextpoint
         
+        for i in range(0, 8):
+            for j in range(0, int(self.yLength)):
+                for k in range(0, int(self.xLength)):
+                    for l in range(0, int(self.numGoal)):
+                        f.write(str(self.QTable[l][k][j][i]))
+            f.write("\n")
+
+        f.write("check close\n")
         f.close()
 
         return 1
@@ -293,6 +321,9 @@ class TestAI():
 
     def QL(self, tableNum, myPoint):
         lootList = []
+
+        myPoint[0] = int(myPoint[0] + 200)
+        myPoint[1] = int(200 - myPoint[1])
 
         while myPoint == self.goalList[tableNum]:
             nextDi = self.maxQDi(tableNum, myPoint)
@@ -303,7 +334,9 @@ class TestAI():
         
         f = open("8. QLCheck.txt", 'w')
         for i in range(0, len(lootList)):
-            f.write(str(lootList[i]))
+            f.write(str(lootList[i][0]))
+            f.write(" ")
+            f.write(str(lootList[i][1]))
             f.write("\n")
         f.close
         
