@@ -95,8 +95,10 @@ class TestAI():
 
 
     def solve(self, a, b):
-        startPoint = [int(a[0]), int(a[2])]
-        result = self.QL(0, startPoint)                 #need CHANGE!!!!!!!!!!!!!!!!!
+        startPoint = [int(a[0] + 400), int(400 - a[2])]
+        endPoint = [int(b[0] + 400), int(400 - b[2])]
+        endNum = self.findTabel(endPoint)
+        result = self.QL(endNum, startPoint)                 #need CHANGE!!!!!!!!!!!!!!!!!
 
         return result
 
@@ -161,6 +163,15 @@ class TestAI():
     # 7 0 1
     # 6 * 2
     # 5 4 3
+
+    def findTabel(self, endPoint):
+        temp = 0
+        for i in range(0, int(len(self.goalList))):
+            if self.goalList[i] == endPoint:
+                temp = i
+                break
+        return temp
+
 
     def nextLoc(self, pointX, pointY, di):
         if di == 0:
@@ -230,12 +241,13 @@ class TestAI():
 
     def maxQDi(self, tableNum, myState):
         maxValue = 0
-        maxDi = 0
+        maxDi = int(random.randrange(0, 8))
 
         for i in range(0, 8):
             if self.QTable[tableNum][myState[0]][myState[1]][i] > maxValue:
                 maxValue = self.QTable[tableNum][myState[0]][myState[1]][i]
                 maxDi = i
+
         return maxDi
 
 
@@ -246,7 +258,7 @@ class TestAI():
 
     def QLTrain(self):
         #repeat n
-        n = 5
+        n = 10
         alpha = 0.5
 
         f = open("7. QLTrainCheck.txt", 'w')
@@ -258,11 +270,11 @@ class TestAI():
             myPoint = [0, 0]
             while i < n:
                 #myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
-                myPoint = [int(random.randrange(int(max(5, self.goalList[j][0] - 10 - i)), int(min(395, self.goalList[j][0] + 10 + i)))), int(random.randrange(int(max(5, self.goalList[j][1] - 10 - i)), int(min(395, self.goalList[j][1] + 10 + i))))]
+                myPoint = [int(random.randrange(int(max(5, int(self.goalList[j][0] - 10 - i))), int(min(395, int(self.goalList[j][0] + 10 + i))))), int(random.randrange(int(max(5, int(self.goalList[j][1] - 10 - i))), int(min(395, int(self.goalList[j][1] + 10 + i)))))]
                 #if myPoint type is block do again
                 while self.mapTable[myPoint[0]][myPoint[1]] != 0:
                     #myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
-                    myPoint = [int(random.randrange(int(max(5, self.goalList[j][0] - 10 - i)), int(min(395, self.goalList[j][0] + 10 + i)))), int(random.randrange(int(max(5, self.goalList[j][1] - 10 - i)), int(min(395, self.goalList[j][1] + 10 + i))))]
+                    myPoint = [int(random.randrange(int(max(5, int(self.goalList[j][0] - 10 - i))), int(min(395, int(self.goalList[j][0] + 10 + i))))), int(random.randrange(int(max(5, int(self.goalList[j][1] - 10 - i))), int(min(395, int(self.goalList[j][1] + 10 + i)))))]
                 firstStartPoint = myPoint
                 checkLoop = 0
                 checkStep = 0
@@ -281,23 +293,29 @@ class TestAI():
                         nextDi = int(round(nextDi))
                         checkFailStart = checkFailStart + 1
                         if checkFailStart > 50:
-                            myPoint = self.goalList[j]
                             break
+                    if checkFailStart > 50:
+                        break
+
                     nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
 
                     self.QTable[j][myPoint[0]][myPoint[1]][nextDi] = self.RTable[j][myPoint[0]][myPoint[1]][nextDi] + alpha * self.maxQValue(j, nextPoint)
                     myPoint[0] = nextPoint[0]
                     myPoint[1] = nextPoint[1]
-
+                    
                     checkStep = checkStep + 1
                     if checkStep > 1000:
                         myPoint = self.goalList[j]
-                        #i = i - 1
+                        f.write("check fail\n")
+                        i = i - 1
 
                     if myPoint == firstStartPoint:
                         checkLoop = checkLoop + 1
+                        f.write("check loop\n")
                     if checkLoop > 100:
                         myPoint = self.goalList[j]
+                        f.write("check loop on\n")
+                    
                 
                 i = i + 1
 
@@ -322,17 +340,20 @@ class TestAI():
     def QL(self, tableNum, myPoint):
         lootList = []
 
-        myPoint[0] = int(myPoint[0] + 200)
-        myPoint[1] = int(200 - myPoint[1])
+        f = open("8. QLCheck.txt", 'w')
 
-        while myPoint == self.goalList[tableNum]:
-            nextDi = self.maxQDi(tableNum, myPoint)
-            nextPoint = self.nextLoc(myPoint[0], myPoint[1], nextDi)
-            lootList.append(myPoint)
+        myPoint[0] = int(myPoint[0])
+        myPoint[1] = int(myPoint[1])
+        nextPoint = [0, 0]
+
+        while myPoint != self.goalList[tableNum]:
+            nextDi = int(self.maxQDi(tableNum, myPoint))
+            nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
+            lootList.append(nextPoint)
             myPoint = nextPoint
             #pass nextpoint
         
-        f = open("8. QLCheck.txt", 'w')
+        
         for i in range(0, len(lootList)):
             f.write(str(lootList[i][0]))
             f.write(" ")
