@@ -267,7 +267,7 @@ class TestAI():
 
     def QLTrain(self):
         #repeat n
-        n = 50
+        n = 500
         alpha = 0.5
 
         f = open("7. QLTrainCheck.txt", 'w')
@@ -360,7 +360,7 @@ class TestAI():
             nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
             lootList.append(float(nextPoint[0] - self.xLength//2))
             lootList.append(0.0)
-            lootList.append(self.yLength//2 - float(nextPoint[1]))
+            lootList.append(float(self.yLength//2 - nextPoint[1]))
             myPoint[0] = int(nextPoint[0])
             myPoint[1] = int(nextPoint[1])
             #pass nextpoint
