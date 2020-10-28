@@ -167,7 +167,7 @@ class TestAI():
     def findTabel(self, endPoint):
         temp = 0
         for i in range(0, int(len(self.goalList))):
-            if self.goalList[i] == endPoint:
+            if int(self.goalList[i][0]) == int(endPoint[0]) or int(self.goalList[i][1]) == int(endPoint[1]):
                 temp = i
                 break
         return temp
@@ -198,30 +198,23 @@ class TestAI():
         elif di == 7:
             x = pointX - 1
             y = pointY - 1
-        
-        if pointX < 0:
-            pointX = 0
-        elif pointX > int(self.xLength):
-            pointX = int(self.xLength)
-        if pointY < 0:
-            pointY = 0
-        elif pointY > int(self.yLength):
-            pointY = int(self.yLength)
 
         return x, y
 
 
     def checkValue(self, goalNum, pointX, pointY, di):
         x, y = self.nextLoc(pointX, pointY, di)
+        x = int(x)
+        y = int(y)
         
-        if x == self.goalList[goalNum][0] and y == self.goalList[goalNum][1]:
-            return 1000
+        if x == int(self.goalList[goalNum][0]) and y == int(self.goalList[goalNum][1]):
+            return 300
 
         if x < 0 or y < 0 or x >= self.xLength or y >= self.yLength:
             return -2
-        elif self.mapTable[x][y] == 0:
+        elif int(self.mapTable[x][y]) == 0:
             return -1
-        elif self.mapTable[x][y] == 1 or self.mapTable[x][y] == 2:
+        elif int(self.mapTable[x][y]) == 1 or int(self.mapTable[x][y]) == 2:
             return 0
         
         return 0
@@ -250,12 +243,28 @@ class TestAI():
 
     def maxQDi(self, tableNum, myState):
         maxValue = 0
-        maxDi = int(random.randrange(0, 8))
+        maxDi = 0
+        canMoveDi = []
+
+        print(myState)
 
         for i in range(0, 8):
+            tempDi = i
             if self.QTable[tableNum][myState[0]][myState[1]][i] > maxValue:
                 maxValue = self.QTable[tableNum][myState[0]][myState[1]][i]
-                maxDi = i
+                canMoveDi = [tempDi]
+            elif self.QTable[tableNum][myState[0]][myState[1]][i] == maxValue:
+                canMoveDi.append(tempDi)
+
+        if int(len(canMoveDi)) > 1:
+            temp = int(random.randrange(0, int(len(canMoveDi))))
+        else:
+            temp = 0
+        maxDi = int(canMoveDi[temp])
+
+        print(canMoveDi)
+        print(maxDi)
+        print(maxValue)
 
         return maxDi
 
@@ -267,7 +276,7 @@ class TestAI():
 
     def QLTrain(self):
         #repeat n
-        n = 500
+        n = 100
         alpha = 0.5
 
         f = open("7. QLTrainCheck.txt", 'w')
@@ -281,14 +290,16 @@ class TestAI():
                 #myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
                 myPoint = [int(random.randrange(int(max(5, int(self.goalList[j][0] - 10 - i))), int(min(395, int(self.goalList[j][0] + 10 + i))))), int(random.randrange(int(max(5, int(self.goalList[j][1] - 10 - i))), int(min(395, int(self.goalList[j][1] + 10 + i)))))]
                 #if myPoint type is block do again
-                while self.mapTable[myPoint[0]][myPoint[1]] != 0:
+                while self.mapTable[myPoint[0]][myPoint[1]] == 0:
                     #myPoint = (int(random.randrange(5, self.xLength)), int(random.randrange(5, self.yLength)))
                     myPoint = [int(random.randrange(int(max(5, int(self.goalList[j][0] - 10 - i))), int(min(395, int(self.goalList[j][0] + 10 + i))))), int(random.randrange(int(max(5, int(self.goalList[j][1] - 10 - i))), int(min(395, int(self.goalList[j][1] + 10 + i)))))]
+                
                 firstStartPoint = myPoint
                 checkLoop = 0
                 checkStep = 0
                 nextPoint = [0, 0]
-                while myPoint != self.goalList[j]:
+
+                while int(myPoint[0]) != int(self.goalList[j][0]) or int(myPoint[1]) != int(self.goalList[j][1]):
                     #randomChoose = random.randrange(0, 100)
                     #if randomChoose < 30:
                     #    nextDi = takeTable(takeSeta(myPoint[0], myPoint[1], self.goalList[j][0], self.goalList[j][1]))
@@ -300,6 +311,7 @@ class TestAI():
                     while self.RTable[j][myPoint[0]][myPoint[1]][nextDi] == -1:
                         nextDi = random.randrange(0, 8)
                         nextDi = int(round(nextDi))
+
                         checkFailStart = checkFailStart + 1
                         if checkFailStart > 50:
                             break
@@ -307,10 +319,12 @@ class TestAI():
                         break
 
                     nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
+                    if int(nextPoint[0]) == int(self.goalList[j][0]) and int(nextPoint[1]) == int(self.goalList[j][1]):
+                        break
 
                     self.QTable[j][myPoint[0]][myPoint[1]][nextDi] = self.RTable[j][myPoint[0]][myPoint[1]][nextDi] + alpha * self.maxQValue(j, nextPoint)
-                    myPoint[0] = nextPoint[0]
-                    myPoint[1] = nextPoint[1]
+                    myPoint[0] = int(nextPoint[0])
+                    myPoint[1] = int(nextPoint[1])
                     
                     checkStep = checkStep + 1
                     if checkStep > 1000:
@@ -324,6 +338,7 @@ class TestAI():
                     if checkLoop > 100:
                         myPoint = self.goalList[j]
                         f.write("check loop on\n")
+                        i = i - 1
                     
                 
                 i = i + 1
@@ -355,7 +370,7 @@ class TestAI():
         myPoint[1] = int(myPoint[1])
         nextPoint = [0, 0]
 
-        while myPoint != self.goalList[tableNum]:
+        while int(myPoint[0]) != int(self.goalList[tableNum][0]) or int(myPoint[1]) != int(self.goalList[tableNum][1]):
             nextDi = int(self.maxQDi(tableNum, myPoint))
             nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
             lootList.append(float(nextPoint[0] - self.xLength//2))
@@ -377,3 +392,61 @@ class TestAI():
         
         return lootList
 
+testAi = TestAI([ 2.00 , -38.40 , 0.01 , 23.80 , 7.80 , 10.00 , 38.30 , 328.00,
+2.00 , -27.50 , 0.01 , 42.20 , 5.00 , 10.00 , 38.30 , 282.30,
+2.00 , -7.89 , 0.01 , 23.27 , 5.00 , 10.00 , 21.10 , 4.02,
+2.00 , -57.20 , 0.01 , 26.70 , 7.70 , 10.00 , 21.10 , 6.20,
+2.00 , -45.60 , 0.01 , 7.40 , 7.70 , 10.00 , 18.90 , 282.30,
+2.00 , -63.40 , 0.01 , -66.90 , 3.90 , 10.00 , 23.30 , 282.30,
+1.00 , -49.20 , 0.25 , 70.10 , 32.61 , 0.50 , 63.70 , 17.46,
+1.00 , -66.10 , 0.25 , 67.30 , 47.60 , 0.50 , 63.70 , 1.60,
+1.00 , -32.22 , 0.25 , -40.65 , 30.00 , 0.50 , 70.00 , 12.00,
+1.00 , -6.92 , 0.25 , -23.51 , 20.00 , 0.50 , 74.00 , 316.65,
+1.00 , 8.02 , 0.25 , -60.85 , 20.00 , 0.50 , 45.00 , 21.70,
+1.00 , -32.71 , 0.25 , 1.53 , 11.80 , 0.50 , 20.00 , 11.00,
+1.00 , -18.25 , 0.25 , -69.23 , 60.00 , 0.50 , 20.00 , 12.00,
+1.00 , -82.27 , 0.25 , -29.62 , 36.50 , 0.50 , 100.00 , 15.00,
+1.00 , -58.83 , 0.25 , 13.95 , 10.00 , 0.50 , 10.00 , 45.00,
+1.00 , -74.20 , 0.25 , 17.37 , 30.00 , 0.50 , 10.00 , 5.00,
+1.00 , 0.79 , 0.25 , 52.87 , 19.90 , 0.50 , 39.60 , 20.00,
+1.00 , 12.91 , 0.25 , 42.71 , 38.90 , 0.50 , 30.60 , 10.00,
+1.00 , -10.34 , 0.25 , 36.05 , 9.50 , 0.50 , 5.00 , 45.90,
+1.00 , 22.49 , 0.25 , 59.50 , 12.16 , 0.50 , 23.40 , 320.00,
+1.00 , 8.55 , 0.25 , 69.57 , 8.20 , 0.50 , 21.46 , 276.78,
+1.00 , 26.50 , 0.25 , -10.00 , 10.00 , 0.50 , 40.80 , 7.00,
+1.00 , 6.31 , 0.25 , 7.61 , 35.60 , 0.50 , 8.79 , 4.00,
+1.00 , 6.95 , 0.25 , -9.57 , 45.80 , 0.50 , 8.79 , 47.90,
+1.00 , 11.30 , 0.25 , -0.30 , 25.85 , 0.50 , 8.79 , 4.00,
+0.00 , -82.99 , 7.00 , -84.70 , 18.00 , 14.00 , 15.00 , 6.00,
+0.00 , -68.06 , 2.00 , 69.23 , 12.00 , 4.00 , 12.00 , 350.00,
+0.00 , -89.92 , 4.00 , 65.38 , 13.00 , 8.00 , 48.00 , 354.00,
+0.00 , -70.15 , 6.00 , 94.35 , 50.00 , 12.00 , 25.00 , 350.00,
+0.00 , -20.32 , 5.00 , -25.61 , 30.00 , 10.00 , 10.00 , 15.00,
+0.00 , -23.10 , 8.00 , -32.12 , 12.00 , 16.00 , 13.00 , 15.00,
+0.00 , -25.31 , 3.50 , -48.09 , 35.00 , 7.00 , 50.00 , 15.00,
+0.00 , -3.28 , 3.00 , -50.88 , 30.00 , 6.00 , 30.00 , 45.00,
+0.00 , -3.94 , 2.50 , -61.06 , 30.00 , 5.00 , 30.00 , 23.00,
+0.00 , -30.62 , 1.50 , 3.54 , 8.00 , 3.00 , 3.50 , 350.00,
+0.00 , -72.50 , 3.50 , -27.16 , 15.00 , 7.00 , 72.50 , 15.00,
+0.00 , -77.97 , 4.50 , -20.52 , 15.00 , 9.00 , 60.00 , 3.50,
+0.00 , -59.38 , 1.50 , 14.64 , 8.00 , 3.00 , 3.50 , 47.00,
+0.00 , -74.35 , 1.50 , 18.70 , 8.00 , 3.00 , 3.50 , 6.00,
+0.00 , 17.66 , 7.00 , 42.58 , 25.00 , 14.00 , 25.00 , 10.00,
+0.00 , 20.14 , 9.00 , 53.77 , 17.00 , 18.00 , 17.00 , 320.00,
+0.00 , 13.94 , 10.00 , 57.99 , 13.00 , 20.00 , 20.00 , 10.00,
+0.00 , 14.08 , 2.00 , -14.68 , 8.00 , 4.00 , 26.00 , 320.00,
+0.00 , 17.76 , 2.50 , -7.19 , 20.00 , 5.00 , 10.00 , 350.00,
+0.00 , 22.68 , 3.00 , -14.03 , 11.00 , 6.00 , 19.00 , 10.00,
+0.00 , 33.92 , 10.00 , 76.73 , 8.00 , 20.00 , 14.00 , 325.00,
+0.00 , 56.81 , 10.00 , 81.53 , 8.00 , 20.00 , 14.00 , 325.00,
+0.00 , 45.54 , 8.00 , 79.50 , 22.00 , 16.00 , 11.00 , 350.00,
+0.00 , 54.40 , 12.00 , 57.50 , 30.00 , 24.00 , 10.00 , 342.00,
+0.00 , 45.30 , 7.00 , 44.30 , 12.00 , 14.00 , 22.00 , 3.00,
+0.00 , 69.50 , 4.00 , 52.90 , 9.00 , 8.00 , 22.00 , 330.00,
+0.00 , 57.70 , 3.50 , 45.80 , 22.00 , 7.00 , 16.00 , 339.00,
+0.00 , 73.42 , 10.00 , -14.82 , 16.00 , 20.00 , 25.00 , 25.00,
+0.00 , 63.85 , 7.00 , -6.71 , 10.00 , 14.00 , 16.00 , 20.00,
+0.00 , 49.65 , 5.00 , -15.87 , 22.00 , 10.00 , 35.00 , 5.00,
+0.00 , 58.75 , 6.00 , -21.44 , 32.00 , 12.00 , 26.00 , 18.00 ], [ 3.00 , 0.00 , 42.00,
+15.00 , 0.00 , -1.00 ])
+print(testAi.solve([ 25.00 , 0.00 , -27.00 ], [15, 0, -1]))
