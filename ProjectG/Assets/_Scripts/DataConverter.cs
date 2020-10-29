@@ -25,10 +25,11 @@ public class DataConverter : MonoBehaviour
 		Debug.Log("GetRoute");
 		Debug.Log(tString(a.ToArray(), 3));
 		Debug.Log(tString(b.ToArray(), 3));
-		IList<float> ret = (IList<float>)PySolverClass.solve(a, b);
+		dynamic retd = PySolverClass.solve(a, b);
+		IList<object> ret = (IList<object>)retd;
 		List<Vector3> pars = new List<Vector3>();
 		for(int idx = 0; idx < ret.Count; idx += 3) {
-			pars.Add(new Vector3(ret[idx], ret[idx + 1], ret[idx + 2]));
+			pars.Add(new Vector3(System.Convert.ToSingle((double)ret[idx]), System.Convert.ToSingle((double)ret[idx + 1]), System.Convert.ToSingle((double)ret[idx + 2])));
 		}
 		return pars;
 	}
