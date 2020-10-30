@@ -350,16 +350,16 @@ class TestAI():
                     myPoint[0] = int(nextPoint[0])
                     myPoint[1] = int(nextPoint[1])
                     
-                    checkStep = checkStep + 1
-                    if checkStep > 1000:
-                        f.write("check fail\n")
-                        i = i - 1
-                        break
+                    #checkStep = checkStep + 1
+                    #if checkStep > 1000:
+                        #f.write("check fail\n")
+                    #    i = i - 1
+                    #    break
 
                     if myPoint == firstStartPoint:
                         checkLoop = checkLoop + 1
                     if checkLoop > 100:
-                        f.write("check loop on\n")
+                        #f.write("check loop on\n")
                         i = i - 1
                         break
                     
@@ -369,7 +369,7 @@ class TestAI():
                 
                 i = i + 1
 
-                f.write("check 1\n")
+                #f.write("check 1\n")
                 #print("check Train")
 
                     #pass nextpoint
