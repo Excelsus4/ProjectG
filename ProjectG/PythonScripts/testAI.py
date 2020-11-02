@@ -1,5 +1,6 @@
 import math
 import random
+import os
 
 class TestAI():
     #mapTable = np.zeros((xLength,yLength))
@@ -53,7 +54,7 @@ class TestAI():
             f.write("\n")
         f.close
 
-        self.makeTable()
+        self.makeRTable()
 
         f = open("5. RTableFile.txt", 'w')
         for i in range(0, 8):
@@ -64,16 +65,41 @@ class TestAI():
             f.write("\n")
         f.close
 
-        #f = open("6. QTableFile.txt", 'w')
-        #for i in range(0, 8):
-        #    for j in range(0, int(self.yLength)):
-        #        for k in range(0, int(self.xLength)):
-        #            for l in range(0, int(self.numGoal)):
-        #                f.write(str(self.QTable[l][k][j][i]))
-        #    f.write("\n")
-        #f.close
+        self.checkQTableFile()
 
         self.QLTrain()
+
+
+    def checkQTableFile(self):
+        if os.path.isfile('6. QTableFile.txt'):
+            f = open("6. QTableFile.txt", 'r')
+            for i in range(0, 8):
+                for j in range(0, int(self.yLength)):
+                    for k in range(0, int(self.xLength)):
+                        line = f.readline()
+                        data = line.split(' ')
+                        for l in range(0, int(self.numGoal)):
+                            self.QTable[l][k][j][i] = int(data[l])
+            f.close
+        else:
+            for w in range(0, int(len(self.goalList))):
+                for i in range(0, int(self.xLength)):
+                    for j in range(0, int(self.yLength)):
+                        for k in range(0, 8):
+                            if self.checkValue(w, i, j, k) != -2:
+                                self.QTable[w][i][j][k] = self.checkValue(w, i, j, k)
+
+            f = open("6. QTableFile.txt", 'w')
+            for i in range(0, 8):
+                for j in range(0, int(self.yLength)):
+                    for k in range(0, int(self.xLength)):
+                        for l in range(0, int(self.numGoal)):
+                            f.write(str(self.QTable[l][k][j][i]))
+                            f.write(" ")
+                        f.write("\n")
+            f.close
+        
+
 
 
     def passing(self):
@@ -220,7 +246,7 @@ class TestAI():
         return 0
 
 
-    def makeTable(self):
+    def makeRTable(self):
         for w in range(0, int(len(self.goalList))):
             for i in range(0, int(self.xLength)):
                 for j in range(0, int(self.yLength)):
@@ -229,12 +255,7 @@ class TestAI():
                             self.RTable[w][i][j][k] = self.checkValue(w, i, j, k)
                         #self.RTable[w][i][j][k] = self.checkValue(w, i, j, k)
 
-        for w in range(0, int(len(self.goalList))):
-            for i in range(0, int(self.xLength)):
-                for j in range(0, int(self.yLength)):
-                    for k in range(0, 8):
-                        if self.checkValue(w, i, j, k) != -2:
-                            self.QTable[w][i][j][k] = self.checkValue(w, i, j, k)
+        
 
         
 
@@ -283,7 +304,7 @@ class TestAI():
 
     def QLTrain(self):
         #repeat n
-        n = 50
+        n = 10
         alpha = 0.5
 
         f = open("7. QLTrainCheck.txt", 'w')
