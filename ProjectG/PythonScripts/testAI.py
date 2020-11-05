@@ -85,6 +85,7 @@ class TestAI():
         #repeat n
         n = 10
         alpha = 0.5
+        diWeight = 0.7
 
         f = open("7. QLTrainCheck.txt", 'w')
         f.write("check open\n")
@@ -92,6 +93,7 @@ class TestAI():
         for j in range(0, int(len(self.goalList))):
             i = 0
             myPoint = [0, 0]
+            
 
             while i < n:
                 myPoint = [int(random.randrange(int(max(5, int(self.goalList[j][0] - 10 - i))), int(min(395, int(self.goalList[j][0] + 10 + i))))), int(random.randrange(int(max(5, int(self.goalList[j][1] - 10 - i))), int(min(395, int(self.goalList[j][1] + 10 + i)))))]
@@ -110,17 +112,20 @@ class TestAI():
                     #    nextDi = takeTable(takeSeta(myPoint[0], myPoint[1], self.goalList[j][0], self.goalList[j][1]))
                     #else:
                     
-                    nextDi = random.randrange(0, 8)
-                    nextDi = int(round(nextDi))
-                    checkFailStart = 0
-
-                    while self.RTable[j][myPoint[0]][myPoint[1]][nextDi] == -1:
+                    if int(self.maxQValue) == 0:
                         nextDi = random.randrange(0, 8)
-                        nextDi = int(nextDi)
+                        nextDi = int(round(nextDi))
+                        checkFailStart = 0
 
-                        checkFailStart = checkFailStart + 1
-                        if checkFailStart > 50:
-                            break
+                        while self.RTable[j][myPoint[0]][myPoint[1]][nextDi] == -1:
+                            nextDi = random.randrange(0, 8)
+                            nextDi = int(nextDi)
+                            checkFailStart = checkFailStart + 1
+                            if checkFailStart > 50:
+                                break
+                    else:
+                        nextDi = int(self.maxQDi(tableNum, myPoint))
+                        
                     if checkFailStart > 50:
                         break
 
@@ -128,13 +133,16 @@ class TestAI():
                     nextPoint[0] = int(nextPoint[0])
                     nextPoint[1] = int(nextPoint[1])
                     
+                    #break check code (not need)
                     if int(nextPoint[0]) == int(self.goalList[j][0]) and int(nextPoint[1]) == int(self.goalList[j][1]):
                         break
-
                     if int(self.RTable[j][myPoint[0]][myPoint[1]][nextDi]) == 1000:
                         break
 
-                    self.QTable[j][myPoint[0]][myPoint[1]][nextDi] = self.RTable[j][myPoint[0]][myPoint[1]][nextDi] + alpha * self.maxQValue(j, nextPoint)
+                    if nextDi == 1 or nextDi == 3 or nextDi == 5 or nextDi == 7:
+                        self.QTable[j][myPoint[0]][myPoint[1]][nextDi] = self.RTable[j][myPoint[0]][myPoint[1]][nextDi] + alpha * diWeight * self.maxQValue(j, nextPoint)
+                    else:
+                        self.QTable[j][myPoint[0]][myPoint[1]][nextDi] = self.RTable[j][myPoint[0]][myPoint[1]][nextDi] + alpha * self.maxQValue(j, nextPoint)
 
                     myPoint[0] = int(nextPoint[0])
                     myPoint[1] = int(nextPoint[1])
@@ -144,7 +152,7 @@ class TestAI():
                     if checkLoop > 100:
                         i = i - 1
                         break
-                    #check code
+                    #break check code (not need)
                     if myPoint == self.goalList[j]:
                         break
                     
@@ -358,12 +366,12 @@ class TestAI():
         return 0
 
 
-    def maxQValue(self, tableNum, nextState):
+    def maxQValue(self, tableNum, myState):
         maxValue = 0
 
         for i in range(0, 8):
-            if self.QTable[tableNum][nextState[0]][nextState[1]][i] > maxValue:
-                maxValue = self.QTable[tableNum][nextState[0]][nextState[1]][i]
+            if self.QTable[tableNum][myState[0]][myState[1]][i] > maxValue:
+                maxValue = self.QTable[tableNum][myState[0]][myState[1]][i]
         return maxValue
 
 
