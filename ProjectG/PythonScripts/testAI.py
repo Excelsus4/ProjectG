@@ -112,7 +112,7 @@ class TestAI():
                     #    nextDi = takeTable(takeSeta(myPoint[0], myPoint[1], self.goalList[j][0], self.goalList[j][1]))
                     #else:
                     
-                    if int(self.maxQValue) == 0:
+                    if int(self.maxQValue(j, myPoint)) == 0:
                         nextDi = random.randrange(0, 8)
                         nextDi = int(round(nextDi))
                         checkFailStart = 0
@@ -124,7 +124,7 @@ class TestAI():
                             if checkFailStart > 50:
                                 break
                     else:
-                        nextDi = int(self.maxQDi(tableNum, myPoint))
+                        nextDi = int(self.maxQDi(j, myPoint))
                         
                     if checkFailStart > 50:
                         break
@@ -400,5 +400,4 @@ class TestAI():
     #point pass def
     def passPoint(self):
         pass
-
 
