@@ -77,13 +77,14 @@ class TestAI():
         endPoint = [int(b[0] + self.xLength // 2), int(self.yLength // 2 - b[2])]
         endNum = self.findTabel(endPoint)
         result = self.QL(endNum, startPoint)                 
+        result = self.skipLoot(result)
 
         return result
     
 
     def QLTrain(self):
         #repeat n
-        n = 10
+        n = 500
         alpha = 0.5
         diWeight = 0.7
 
@@ -211,15 +212,15 @@ class TestAI():
     #sub activity-----------------------------------------------------------------------------------------------
 
     def checkQTableFile(self):
-        if os.path.isfile('6. QTableFile.txt'):
-            f = open("6. QTableFile.txt", 'r')
+        if os.path.isfile('QTableFile.txt'):
+            f = open("QTableFile.txt", 'r')
             for i in range(0, 8):
                 for j in range(0, int(self.yLength)):
                     for k in range(0, int(self.xLength)):
                         line = f.readline()
                         data = line.split(' ')
                         for l in range(0, int(self.numGoal)):
-                            self.QTable[l][k][j][i] = int(data[l])
+                            self.QTable[l][k][j][i] = float(data[l])
             f.close
         else:
             for w in range(0, int(len(self.goalList))):
@@ -233,7 +234,7 @@ class TestAI():
         
 
     def writeQTableFie(self):
-        f = open("6. QTableFile.txt", 'w')
+        f = open("QTableFile.txt", 'w')
         for i in range(0, 8):
             for j in range(0, int(self.yLength)):
                 for k in range(0, int(self.xLength)):
@@ -303,6 +304,71 @@ class TestAI():
                     for k in range(0, 8):
                         if self.checkValue(w, i, j, k) != -2:
                             self.RTable[w][i][j][k] = self.checkValue(w, i, j, k)
+
+    
+    def skipLoot(self, putList):
+        i = 0
+        j = 0
+        while i < int(len(putList)):
+            j = i + 6
+            if j >= int(len(putList)):
+                break
+
+            checkMapCode = 0
+            passForPoint = 0
+
+            #same to x
+            if putList[i] == putList[j]:
+                x = int(putList[i])
+                passForPoint = 1
+                for y in range(int(min(putList[i + 2], putList[j + 2])), int(max(putList[i + 2], putList[j + 2]))):
+                    if self.mapTable[x][y] == 0:
+                        checkMapCode = checkMapCode + 1
+        
+            #same to y
+            elif putList[i + 2] == putList[j + 2]:
+                y = int(putList[i + 2])
+                passForPoint = 1
+                for x in range(int(min(putList[i], putList[j])), int(max(putList[i], putList[j]))):
+                    if self.mapTable[x][y] == 0:
+                        checkMapCode = checkMapCode + 1
+                
+            #not same
+            elif putList[i] < putList[j]:
+                startX = putList[i]
+                startY = putList[i + 2]
+                endX = putList[j]
+                endY = putList[j + 2]
+            else:
+                startX = putList[j]
+                startY = putList[j + 2]
+                endX = putList[i]
+                endY = putList[i + 2]
+            delta = (endY - startY) / (endX - startX)
+
+            if passForPoint == 0:
+                for x in range(int(startX), int(endX)):
+                    if delta > 0:
+                        pointS = int(math.floor(startY + delta * (x - startX)))
+                        pointE = int(math.ceil(startY + delta * (x + 1 - startX)))
+                        for y in range(pointS, pointE + 1):
+                            if self.mapTable[x][y] == 0:
+                                checkMapCode = checkMapCode + 1
+                    else:
+                        pointS = int(math.floor(startY + delta * (x - startX)))
+                        pointE = int(math.ceil(startY + delta * (x + 1 - startX)))
+                        for y in range(pointS, pointE + 1, -1):
+                            if self.mapTable[x][y] == 0:
+                                checkMapCode = checkMapCode + 1
+
+            if checkMapCode == 0:
+                del putList[3:6]
+            else:
+                i = i + 3
+    
+        return putList
+            
+        
 
 
     #calculation----------------------------------------------------------------------------------------------------
@@ -400,4 +466,3 @@ class TestAI():
     #point pass def
     def passPoint(self):
         pass
-
