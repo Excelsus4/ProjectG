@@ -309,6 +309,7 @@ class TestAI():
     def skipLoot(self, putList):
         i = 0
         j = 0
+        
         while i < int(len(putList)):
             j = i + 6
             if j >= int(len(putList)):
@@ -316,6 +317,11 @@ class TestAI():
 
             checkMapCode = 0
             passForPoint = 0
+
+            startX = 0.0
+            startY = 0.0
+            endX = 0.0
+            endY = 0.0
 
             #same to x
             if putList[i] == putList[j]:
@@ -344,7 +350,9 @@ class TestAI():
                 startY = putList[j + 2]
                 endX = putList[i]
                 endY = putList[i + 2]
-            delta = (endY - startY) / (endX - startX)
+            
+            if endX - startX != 0:
+                delta = (endY - startY) / (endX - startX)
 
             if passForPoint == 0:
                 for x in range(int(startX), int(endX)):
