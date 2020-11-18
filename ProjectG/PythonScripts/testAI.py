@@ -87,6 +87,7 @@ class TestAI():
         n = 500
         alpha = 0.5
         diWeight = 0.7
+        randomLoot = 0
 
         f = open("7. QLTrainCheck.txt", 'w')
         f.write("check open\n")
@@ -129,6 +130,12 @@ class TestAI():
                         
                     if checkFailStart > 50:
                         break
+
+                    randomLoot = random.randrange(0,10)
+                    if randomLoot <= 1:
+                        nextDi = int(round(random.randrange(0, 8)))
+                        while self.RTable[j][myPoint[0]][myPoint[1]][nextDi] == -1:
+                            nextDi = int(round(random.randrange(0, 8)))
 
                     nextPoint[0], nextPoint[1] = self.nextLoc(myPoint[0], myPoint[1], nextDi)
                     nextPoint[0] = int(nextPoint[0])
@@ -323,8 +330,15 @@ class TestAI():
             endX = 0.0
             endY = 0.0
 
+            #same to x,y
+            if putList[i] == putList[j] and putList[i + 2] == putList[j + 2]:
+                passForPoint = 1
+                checkMapCode = 1
+                del putList[6:9]
+                i = i - 3
+
             #same to x
-            if putList[i] == putList[j]:
+            elif putList[i] == putList[j]:
                 x = int(putList[i])
                 passForPoint = 1
                 for y in range(int(min(putList[i + 2], putList[j + 2])), int(max(putList[i + 2], putList[j + 2]))):
