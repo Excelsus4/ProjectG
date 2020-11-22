@@ -133,6 +133,6 @@ filename = os.path.abspath ('PythonScripts/"+PythonScript+"');";
 	}
 
 	public void ManualTrain() {
-		PySolverClass.QLtrain();
+		PySolverClass.QLTrain();
 	}
 }
