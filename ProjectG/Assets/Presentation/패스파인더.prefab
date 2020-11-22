@@ -1450,7 +1450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EndLocation: {fileID: 0}
-  MoveSpeed: 0
+  MoveSpeed: 1
   Interval: 1
 --- !u!1 &6587204651928483630
 GameObject:
