@@ -32,12 +32,19 @@ public class Pathfinder : MonoBehaviour
 	private void Update() {
 		//Call this by interval system, probably yield the call to an interval distributer?
 		//UpdateRoute
-		if(isMoving)
+		if (isMoving) {
 			MoveToward(GetCurrentTarget());
+			CheckDistance();
+		}
 	}
 
 	private Vector3 GetCurrentTarget() {
 		return route[CurrentNode];
+	}
+
+	private void CheckDistance() {
+		if (Vector3.Distance(transform.position, EndLocation.position) < float.Epsilon)
+			Destroy(gameObject);
 	}
 
 	private void MoveToward(Vector3 target) {
