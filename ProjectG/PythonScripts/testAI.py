@@ -67,7 +67,7 @@ class TestAI():
 
         self.checkQTableFile()
 
-        self.QLTrain()
+        #self.QLTrain()
 
 
 
@@ -107,6 +107,7 @@ class TestAI():
                 checkLoop = 0
                 checkStep = 0
                 nextPoint = [0, 0]
+                checkFailStart = 0
 
                 while int(myPoint[0]) != int(self.goalList[j][0]) or int(myPoint[1]) != int(self.goalList[j][1]):
                     #randomChoose = random.randrange(0, 100)
