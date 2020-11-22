@@ -11,7 +11,7 @@ public class DataConverter : MonoBehaviour
 
 	public ExitPointCollector ep;
 	public bool UnityDebugMode;
-
+	
 	public List<Vector3> GetRoute(Vector3 p1, Vector3 p2) {
 		List<float> a, b;
 		a = new List<float>(3);
@@ -130,5 +130,9 @@ filename = os.path.abspath ('PythonScripts/"+PythonScript+"');";
 		// 2. ep.c
 		if(!UnityDebugMode)
 			PySolverClass = py.TestAI(mapData, ep.c);
+	}
+
+	public void ManualTrain() {
+		PySolverClass.QLtrain();
 	}
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ExitPointCollector : MonoBehaviour {
 	public List<float> c;
 	public List<Vector3> p;
+	public List<Transform> t;
 
 	private void Awake() {
 		c = new List<float>();
@@ -15,6 +16,7 @@ public class ExitPointCollector : MonoBehaviour {
 			c.Add(b.transform.position.x);
 			c.Add(b.transform.position.y);
 			c.Add(b.transform.position.z);
+			t.Add(b.transform);
 		}
 
 		//print(c);
