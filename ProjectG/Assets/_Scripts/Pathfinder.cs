@@ -43,7 +43,7 @@ public class Pathfinder : MonoBehaviour
 	}
 
 	private void CheckDistance() {
-		if (Vector3.Distance(transform.position, EndLocation.position) < float.Epsilon)
+		if (Vector3.Distance(transform.position, EndLocation.position) < 0.1f)
 			Destroy(gameObject);
 	}
 
