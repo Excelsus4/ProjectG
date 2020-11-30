@@ -365,7 +365,7 @@ class TestAI():
             greater = math.floor(greater)-1
             dif = -1
         for y in range(int(lesser), int(greater), int(dif)):
-            if self.mapTable[int(pos[0])][y] == 0:
+            if self.mapTable[int(pos[0]+200)][y+200] == 0:
                 return True
         # from pos to grad, check mapdata...
         return False
