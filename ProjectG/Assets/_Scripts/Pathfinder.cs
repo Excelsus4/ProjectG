@@ -34,7 +34,7 @@ public class Pathfinder : MonoBehaviour
 		//UpdateRoute
 		if (isMoving) {
 			MoveToward(GetCurrentTarget());
-			CheckDistance();
+			//CheckDistance();
 		}
 	}
 
@@ -68,7 +68,8 @@ public class Pathfinder : MonoBehaviour
 	private void EndEvent() {
 		//This will be called when finder reaches the end point.
 		//Probably play exit animation and then delete itself
-		isMoving = false;
-		animator.SetFloat("Speed", 0);
+		Destroy(gameObject);
+		//isMoving = false;
+		//animator.SetFloat("Speed", 0);
 	}
 }

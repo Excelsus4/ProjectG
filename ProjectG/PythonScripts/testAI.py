@@ -20,50 +20,50 @@ class TestAI():
         self.QTable = [[[[0 for i in range(0,8)] for j in range(0, int(self.yLength))] for k in range(0, int(self.xLength))] for l in range(0, int(self.numGoal))]
         self.RTable = [[[[0 for i in range(0,8)] for j in range(0, int(self.yLength))] for k in range(0, int(self.xLength))] for l in range(0, int(self.numGoal))]
 
-        f = open("1. check.txt", 'w')
-        f.write("check")
-        f.write(str(5.55))
-        f.write("\n")
-        f.write(str(len(self.fls)))
-        f.write("\n")
-        f.write(str(len(self.exitP)))
-        f.close
+        #f = open("1. check.txt", 'w')
+        #f.write("check")
+        #f.write(str(5.55))
+        #f.write("\n")
+        #f.write(str(len(self.fls)))
+        #f.write("\n")
+        #f.write(str(len(self.exitP)))
+        #f.close
 
         self.passing()
 
-        f = open("2. buildFile.txt", 'w')
-        for i in range(0, int(len(self.buildingList))):
-            for j in range(0, 8):
-                f.write(str(self.buildingList[i][j]))
-                f.write(" ")
-            f.write("\n")
-        f.close
+        #f = open("2. buildFile.txt", 'w')
+        #for i in range(0, int(len(self.buildingList))):
+        #    for j in range(0, 8):
+        #        f.write(str(self.buildingList[i][j]))
+        #        f.write(" ")
+        #    f.write("\n")
+        #f.close
 
-        f = open("3. goalFile.txt", 'w')
-        for i in range(0, int(len(self.goalList))):
-            f.write(str(self.goalList[i]))
-            f.write(" ")
-        f.close
+        #f = open("3. goalFile.txt", 'w')
+        #for i in range(0, int(len(self.goalList))):
+        #    f.write(str(self.goalList[i]))
+        #    f.write(" ")
+        #f.close
 
         self.makeMap()
 
-        f = open("4. mapFile.txt", 'w')
-        for i in range(0, int(self.yLength)):
-            for j in range(0, int(self.xLength)):
-                f.write(str(self.mapTable[j][i]))
-            f.write("\n")
-        f.close
+        #f = open("4. mapFile.txt", 'w')
+        #for i in range(0, int(self.yLength)):
+        #    for j in range(0, int(self.xLength)):
+        #        f.write(str(self.mapTable[j][i]))
+        #    f.write("\n")
+        #f.close
 
         self.makeRTable()
 
-        f = open("5. RTableFile.txt", 'w')
-        for i in range(0, 8):
-            for j in range(0, int(self.yLength)):
-                for k in range(0, int(self.xLength)):
-                    for l in range(0, int(self.numGoal)):
-                        f.write(str(self.RTable[l][k][j][i]))
-            f.write("\n")
-        f.close
+        #f = open("5. RTableFile.txt", 'w')
+        #for i in range(0, 8):
+        #    for j in range(0, int(self.yLength)):
+        #        for k in range(0, int(self.xLength)):
+        #            for l in range(0, int(self.numGoal)):
+        #                f.write(str(self.RTable[l][k][j][i]))
+        #    f.write("\n")
+        #f.close
 
         self.checkQTableFile()
 
@@ -89,8 +89,8 @@ class TestAI():
         diWeight = 0.7
         randomLoot = 0
 
-        f = open("7. QLTrainCheck.txt", 'w')
-        f.write("check open\n")
+        #f = open("7. QLTrainCheck.txt", 'w')
+        #f.write("check open\n")
 
         for j in range(0, int(len(self.goalList))):
             i = 0
@@ -177,8 +177,8 @@ class TestAI():
         #                f.write(" ")
         #            f.write("\n")
 
-        f.write("check close\n")
-        f.close()
+        #f.write("check close\n")
+        #f.close()
         self.writeQTableFie()
 
         return 1
@@ -187,7 +187,7 @@ class TestAI():
     def QL(self, tableNum, myPoint):
         lootList = []
 
-        f = open("8. QLCheck.txt", 'w')
+        #f = open("8. QLCheck.txt", 'w')
 
         myPoint[0] = int(myPoint[0])
         myPoint[1] = int(myPoint[1])
@@ -204,14 +204,14 @@ class TestAI():
 
             #pass nextpoint
         
-        for i in range(0, int(len(lootList) // 3)):
-            f.write(str(lootList[i*3]))
-            f.write(" ")
-            f.write(str(lootList[i*3 + 1]))
-            f.write(" ")
-            f.write(str(lootList[i*3 + 2]))
-            f.write("\n")
-        f.close
+        #for i in range(0, int(len(lootList) // 3)):
+        #    f.write(str(lootList[i*3]))
+        #    f.write(" ")
+        #    f.write(str(lootList[i*3 + 1]))
+        #    f.write(" ")
+        #    f.write(str(lootList[i*3 + 2]))
+        #    f.write("\n")
+        #f.close
         
         return lootList
 
@@ -315,84 +315,60 @@ class TestAI():
 
     
     def skipLoot(self, putList):
+        retList = putList[0:3]
         i = 0
-        j = 0
-        
-        while i < int(len(putList)):
-            j = i + 6
-            if j >= int(len(putList)):
-                break
-
-            checkMapCode = 0
-            passForPoint = 0
-
-            startX = 0.0
-            startY = 0.0
-            endX = 0.0
-            endY = 0.0
-
-            #same to x,y
-            if putList[i] == putList[j] and putList[i + 2] == putList[j + 2]:
-                passForPoint = 1
-                checkMapCode = 1
-                del putList[6:9]
-                i = i - 3
-
-            #same to x
-            elif putList[i] == putList[j]:
-                x = int(putList[i])
-                passForPoint = 1
-                for y in range(int(min(putList[i + 2], putList[j + 2])), int(max(putList[i + 2], putList[j + 2]))):
-                    if self.mapTable[x][y] == 0:
-                        checkMapCode = checkMapCode + 1
-        
-            #same to y
-            elif putList[i + 2] == putList[j + 2]:
-                y = int(putList[i + 2])
-                passForPoint = 1
-                for x in range(int(min(putList[i], putList[j])), int(max(putList[i], putList[j]))):
-                    if self.mapTable[x][y] == 0:
-                        checkMapCode = checkMapCode + 1
-                
-            #not same
-            elif putList[i] < putList[j]:
-                startX = putList[i]
-                startY = putList[i + 2]
-                endX = putList[j]
-                endY = putList[j + 2]
-            else:
-                startX = putList[j]
-                startY = putList[j + 2]
-                endX = putList[i]
-                endY = putList[i + 2]
-            
-            if endX - startX != 0:
-                delta = (endY - startY) / (endX - startX)
-
-            if passForPoint == 0:
-                for x in range(int(startX), int(endX)):
-                    if delta > 0:
-                        pointS = int(math.floor(startY + delta * (x - startX)))
-                        pointE = int(math.ceil(startY + delta * (x + 1 - startX)))
-                        for y in range(pointS, pointE + 1):
-                            if self.mapTable[x][y] == 0:
-                                checkMapCode = checkMapCode + 1
+        while i < len(putList):
+            target = 0
+            for j in range(int(i+6), int(len(putList)), 3):
+                deltax = putList[j] - putList[i]
+                deltay = putList[j+2] - putList[i+2]
+                if deltax == 0:
+                    gradient = deltay * 2
+                else:
+                    gradient = deltay / deltax
+                if deltax < 0:
+                    gradient = gradient * -1
+                # start point, half gradient check
+                theFlag = self.helperGradientCheck([putList[i],putList[i+2]], gradient/2)
+                curY = putList[i+2]+gradient/2
+                dif = 1 if deltax > 0 else -1
+                for k in range(int(dif),int(deltax+dif), int(dif)):
+                    if k == deltax:
+                        theFlag = theFlag or self.helperGradientCheck([putList[i]+k,curY], gradient/2)
                     else:
-                        pointS = int(math.floor(startY + delta * (x - startX)))
-                        pointE = int(math.ceil(startY + delta * (x + 1 - startX)))
-                        for y in range(pointS, pointE + 1, -1):
-                            if self.mapTable[x][y] == 0:
-                                checkMapCode = checkMapCode + 1
+                        theFlag = theFlag or self.helperGradientCheck([putList[i]+k,curY], gradient)
+                        curY = curY+gradient
+                # check flag and reduce...
+                if theFlag:
+                    # it is invalid quickroute... return to prev and confirm
+                    target = j-3
+                    break
+                elif j == len(putList)-3:
+                    target = j
 
-            if checkMapCode == 0:
-                del putList[3:6]
-            else:
-                i = i + 3
-    
-        return putList
-            
-        
+            if target == 0:
+                break
+            retList = retList + putList[target:target+3]
+            i = target
+        return retList
 
+  # pos is the current pos, grad is the gradient
+    def helperGradientCheck(self, pos, grad):
+        lesser = pos[1]+0.5
+        greater = pos[1]+grad+0.5
+        dif = 1
+        if grad > 0:
+            lesser = math.floor(lesser)
+            greater = math.ceil(greater)
+        else:
+            lesser = math.ceil(lesser)-1
+            greater = math.floor(greater)-1
+            dif = -1
+        for y in range(int(lesser), int(greater), int(dif)):
+            if self.mapTable[int(pos[0])][y] == 0:
+                return True
+        # from pos to grad, check mapdata...
+        return False
 
     #calculation----------------------------------------------------------------------------------------------------
 

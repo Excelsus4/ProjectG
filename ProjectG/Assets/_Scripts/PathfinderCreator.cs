@@ -20,9 +20,10 @@ public class PathfinderCreator : MonoBehaviour
 	}
 
 	public void CreateNewPathfinder() {
-		print("TODO: Add the create pathfinder script HERE");
-		transform.SetPositionAndRotation(new Vector3(Random.Range(-100, 100), 0, Random.Range(-100, 100)), Quaternion.identity);
-		isFindingPosition = true;
+		if (!isFindingPosition) {
+			transform.SetPositionAndRotation(new Vector3(Random.Range(-100, 100), 0, Random.Range(-100, 100)), Quaternion.identity);
+			isFindingPosition = true;
+		}
 	}
 
 	private void ActuallyInstantiate() {
