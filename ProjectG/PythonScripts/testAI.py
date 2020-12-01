@@ -461,6 +461,20 @@ class TestAI():
 
         return maxDi
 
+    def changeToTable(self, putList):
+        for i in range(0, int(len(putList) / 3)):
+            putList[i] = int(putList[i] + self.xLength // 2)
+            putList[i + 2] = int(self.yLength // 2 - putList[i + 2])
+        return putList
+        
+
+    def changeToField(self, putList):
+        for i in range(0, int(len(putList) / 3)):
+            putList[i] = float(putList[i] - self.xLength // 2)
+            putList[i + 2] = float(self.yLength // 2 - putList[i + 2])
+        return putList
+        
+
 
     #point pass def
     def passPoint(self):
